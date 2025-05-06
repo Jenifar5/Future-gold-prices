@@ -1,0 +1,51 @@
+import java.util.*;
+
+public class GoldPriceForecast {
+
+    // Simple class to hold data points
+    static class DataPoint {
+        int time;       // E.g., day number
+        double price;   // Gold price at that time
+
+        DataPoint(int time, double price) {
+            this.time = time;
+            this.price = price;
+        }
+    }
+
+    public static void main(String[] args) {
+        // Step 1: Historical data (time series)
+        List<DataPoint> data = Arrays.asList(
+            new DataPoint(1, 1890),
+            new DataPoint(2, 1895),
+            new DataPoint(3, 1900),
+            new DataPoint(4, 1910),
+            new DataPoint(5, 1920),
+            new DataPoint(6, 1930),
+            new DataPoint(7, 1940)
+        );
+
+        // Step 2: Calculate linear regression coefficients (y = a + b*x)
+        double sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        int n = data.size();
+
+        for (DataPoint dp : data) {
+            sumX += dp.time;
+            sumY += dp.price;
+            sumXY += dp.time * dp.price;
+            sumXX += dp.time * dp.time;
+        }
+
+        double slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        double intercept = (sumY - slope * sumX) / n;
+
+        System.out.println("Linear Regression Equation: price = " + intercept + " + " + slope + "*day");
+
+        // Step 3: Forecast next 5 days
+        System.out.println("\nForecast for next 5 days:");
+        for (int day = n + 1; day <= n + 5; day++) {
+            double forecast = intercept + slope * day;
+            System.out.printf("Day %d: $%.2f\n", day, forecast);
+        }
+    }
+}
